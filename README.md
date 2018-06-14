@@ -4,9 +4,7 @@
 
 Ames, Iowa is consistently rated as one of the best places to live in the US. Home to Iowa State University, Ames has a population of 66,000 and is 30 miles north of Des Moines (Figure 1). Ames boasts comprehensive medical care, ample parks and recreation, a stable economy, and an emerging cultural scene [1]. As the city continues to experience growth, there is value in modeling home prices in the area to help prospective builders, sellers, and buyers understand the impact of particular property features  on the sell price of a home.
 
-
-
-Figure 1: Scenes of Ames, IA 
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/ames.png" width="50%" height="50%">
 
 ## Dataset
 
@@ -28,27 +26,17 @@ In order to reduce the number of features and make more general property feature
 
 I first looked at the distribution of sale price, our target variable. From the histogram in Figure 2, its becomes apparent that its distribution is skewed right. This makes sense, since less people are buying expensive homes. Many of the other features are also skewed, which is something that I will address later.
 
-
-
-Figure 2: Sale Price distribution 
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/hist.png" width="50%" height="50%">
 
 I next identified the features with the strongest linear relationship with sale price by calculating  Pearson's correlation values (Figure 3).  Overall quality, total square footage, exterior quality, kitchen quality, total bathrooms, basement quality, age, fireplace quality, and masonry veneer area have the strongest linear relationship with sale price. From these top features, we can see that many of them are related, such as exterior quality and overall quality. This is the first hint that our data might have a high degree of multicollinearity, which I will investigate later.
 
-
-
-Figure 3: Top 9 most strongly correlated features with Sale Price 
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/predictors.png" width="50%" height="50%">
 
 I next investigated these top features further and eliminated outliers where present. I plotted the relationship between sale price and overall quality and sale price and total square footage in Figures 4 and 5 below. From the figures we can see that there are indeed clear linear relationships. 
 
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/quality.png" width="50%" height="50%">
 
-
-Figure 4: Box plot of overall quality score vs sale price 
-
-
-
-
-
-Figure 5: Scatter plot of total square footage vs sale price 
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/sf.png" width="50%" height="50%">
 
 As I mentioned earlier, there are two main issues with the data: skewness and multicollinearity. In order to deal with the former I tested the skew of each numeric feature. We generally want to keep skew scores between -1 and 1. Anything outside this range is considered highly skewed. I took the log of any feature with an absolute skew score above 0.7. Taking the log will normalize a skewed distribution and make it more appropriate for use in a linear regression. In order to handle the multicollinearity, or linearity between features, I compared highly correlated features (r > 0.6), and dropped the feature with the lower correlation to Sale Price. I will also use a regularization model to further reduce multicollinearity when I'm modeling. 
 
@@ -58,38 +46,28 @@ After correcting for skew, I dummied the categorical data, and then scaled the d
 
 Once the data was finally prepped, I did k-fold cross validation on unfitted models to get a baseline root mean squared error (RMSE) on linear regression, Lasso regularization, Ridge regularization, and Elastic Net regularization (Figure 6).  Of the four models, Lasso had the lowest baseline RMSE with Elastic Net (high L1 ratio) close behind. I decided to model both to see which performed best.  I suspect that Lasso will perform better since it has an aggressive approach to multicollinearity by eliminating features from the model. 
 
-
-
-Figure 6: Formula for root mean squared error 
-
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/rmse.png" width="50%" height="50%">
 
 
 ## Modeling
 
 I fitted the training data to both a LassoCV and ElasticNetCV (L1 = 0.9) models and calculated RMSE with the test data. The LassoCV model had a slightly lower RMSE (< $19,000) on the testing data than ElasticNetCV. Figure 7 shows the top 10 features used in the model and the strength of their beta coefficient in the linear model. Total square footage and overall quality are again the top features followed by lot area and overall condition. There is a negative relationship with age, which is also to be expected. It also appears that one of the neighborhoods, Northridge Heights, is a desirable place to live in Ames.
 
-Figure 7: Top 10 features used to predict home price in Lasso model 
-
-
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/top.png" width="50%" height="50%">
 
 ## Model Evaluation
 
 The Lasso model performs best on cheaper homes and becomes less accurate on expensive ones (Figure 8). Lower representation of high end homes in the training data likely accounts for this difference. This model can now be used to predict future home sale prices in Ames, IA given certain property features.
 
-
-
-Figure 8: Actual vs predicted sale price
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/model.png" width="50%" height="50%">
 
 ## Next Steps
 
 In summary, Figure 9 lays out the top 10 indicators for home price in Ames, Iowa that my model uses. This model is helpful to those in real estate as well as builders and sellers, who want to better understand the housing market in Ames.
 
-
-
-Figure 9: Top 10 indicators of home price in Lasso model 
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/top.png" width="50%" height="50%">
 
 For next steps, I would like to further refine my model in a few different ways. I would do additional feature engineering to consolidate and reduce number of features. My final model used around 80 features, which is still relatively high, indicating that the model might be too complex. I would also like to optimize algorithm hyperparameters using a GridSearch. Lastly I would like to explore using different algorithms such as XGBoost.   
-
 
 
 ## References 
