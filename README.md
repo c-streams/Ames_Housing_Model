@@ -53,7 +53,7 @@ Once the data was finally prepped, I did k-fold cross validation on unfitted mod
 
 I fitted the training data to both a LassoCV and ElasticNetCV (L1 = 0.9) models and calculated RMSE with the test data. The LassoCV model had a slightly lower RMSE (< $19,000) on the testing data than ElasticNetCV. Figure 7 shows the top 10 features used in the model and the strength of their beta coefficient in the linear model. Total square footage and overall quality are again the top features followed by lot area and overall condition. There is a negative relationship with age, which is also to be expected. It also appears that one of the neighborhoods, Northridge Heights, is a desirable place to live in Ames.
 
-<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/top.png" width="50%" height="50%">
+<img src="https://github.com/c-streams/Ames_Housing_Model/blob/master/images/lasso.png" width="50%" height="50%">
 
 ## Model Evaluation
 
